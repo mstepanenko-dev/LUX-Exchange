@@ -24,3 +24,13 @@ build/
 .idea/
 .DS_Store
 Thumbs.db
+node_modules/
+.env
+.env.*
+dist/
+build/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+npm-debug.log*
