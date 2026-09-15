@@ -1,41 +1,25 @@
-const prisma = require("../lib/prisma");
 const {
   RateProviderError,
-  getLiveRate,
 } = require("../services/rateService");
+const {
+  calculatePortfolioValue,
+  createPortfolioSnapshot,
+} = require("../services/portfolioService");
 
 const getPortfolio = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const wallets = await prisma.wallet.findMany({
-      where: { userId },
-      orderBy: { id: "asc" },
-    });
-
-    const assets = await Promise.all(
-      wallets.map(async (wallet) => {
-        const balance = Number(wallet.balance);
-        const rateToGBP = wallet.currency === "GBP"
-          ? 1
-          : await getLiveRate(wallet.currency, "GBP");
-
-        return {
-          currency: wallet.currency,
-          balance,
-          rateToGBP,
-          valueGBP: balance * rateToGBP,
-        };
-      })
-    );
-
-    const totalGBP = assets.reduce((total, asset) => total + asset.valueGBP, 0);
+    const portfolio = await calculatePortfolioValue(userId);
+    try {
+      await createPortfolioSnapshot(userId, portfolio);
+    } catch (snapshotError) {
+      console.error("PORTFOLIO SNAPSHOT ERROR:", snapshotError);
+    }
 
     return res.json({
       success: true,
       baseCurrency: "GBP",
-      totalGBP,
-      assets,
-      updatedAt: new Date().toISOString(),
+      ...portfolio,
     });
   } catch (error) {
     if (error instanceof RateProviderError) {

@@ -1,4 +1,5 @@
 const prisma = require("../lib/prisma");
+const { createPortfolioSnapshot } = require("../services/portfolioService");
 
 const SUPPORTED_CURRENCIES = new Set(["GBP", "EUR", "USD", "USDT", "BTC"]);
 
@@ -55,6 +56,12 @@ const deposit = async (req, res) => {
 
       return { updatedWallet, transaction };
     });
+
+    try {
+      await createPortfolioSnapshot(userId);
+    } catch (snapshotError) {
+      console.error("DEPOSIT SNAPSHOT ERROR:", snapshotError);
+    }
 
     return res.json({
       success: true,
@@ -123,6 +130,12 @@ const withdraw = async (req, res) => {
 
       return { updatedWallet, transaction };
     });
+
+    try {
+      await createPortfolioSnapshot(userId);
+    } catch (snapshotError) {
+      console.error("WITHDRAWAL SNAPSHOT ERROR:", snapshotError);
+    }
 
     return res.json({
       success: true,

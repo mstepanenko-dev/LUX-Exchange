@@ -4,6 +4,7 @@ const {
   RateProviderError,
   getLiveRate,
 } = require("../services/rateService");
+const { createPortfolioSnapshot } = require("../services/portfolioService");
 
 const FEE_PERCENT = 0.5;
 
@@ -177,6 +178,12 @@ const exchange = async (req, res) => {
         transaction,
       };
     });
+
+    try {
+      await createPortfolioSnapshot(userId);
+    } catch (snapshotError) {
+      console.error("EXCHANGE SNAPSHOT ERROR:", snapshotError);
+    }
 
     return res.json({
       success: true,

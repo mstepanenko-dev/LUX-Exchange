@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const walletRoutes = require("./routes/walletRoutes");
 const exchangeRoutes = require("./routes/exchangeRoutes");
 const portfolioRoutes = require("./routes/portfolioRoutes");
+const portfolioHistoryRoutes = require("./routes/portfolioHistoryRoutes");
 const fundingRoutes = require("./routes/fundingRoutes");
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/wallets", walletRoutes);
 app.use("/api/portfolio", portfolioRoutes);
+app.use("/api/portfolio/history", portfolioHistoryRoutes);
 app.use("/api/funding", fundingRoutes);
 app.use("/api", exchangeRoutes);
 

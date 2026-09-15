@@ -34,6 +34,11 @@ export const getPortfolio = async () => {
   return data
 }
 
+export const getPortfolioHistory = async (range = '24h') => {
+  const { data } = await api.get(`/portfolio/history?range=${range}`)
+  return data
+}
+
 export const getRates = async () => {
   const { data } = await api.get('/rates')
   return data
