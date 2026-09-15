@@ -29,6 +29,11 @@ export const getWallets = async () => {
   return data
 }
 
+export const getPortfolio = async () => {
+  const { data } = await api.get('/portfolio')
+  return data
+}
+
 export const getRates = async () => {
   const { data } = await api.get('/rates')
   return data
