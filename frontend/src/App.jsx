@@ -1,9 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard.jsx'
 import Exchange from './pages/Exchange.jsx'
+import Deposit from './pages/Deposit.jsx'
+import FundingHistory from './pages/FundingHistory.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Transactions from './pages/Transactions.jsx'
+import Withdraw from './pages/Withdraw.jsx'
 import './App.css'
 
 function ProtectedRoute({ children }) {
@@ -41,6 +44,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
+        <Route path="/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
+        <Route path="/funding-history" element={<ProtectedRoute><FundingHistory /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

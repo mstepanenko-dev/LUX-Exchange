@@ -173,6 +173,11 @@ a:hover {
   content: '';
 }
 
+.nav-links .nav-secondary {
+  color: #777183;
+  font-size: 12px;
+}
+
 .logout-button {
   padding: 9px 14px;
   border: 1px solid var(--border);
@@ -327,6 +332,159 @@ a:hover {
   color: var(--accent-soft);
   background: rgba(142, 92, 255, 0.12);
   font: 400 44px/1 var(--heading);
+}
+
+.portfolio-hero-side {
+  display: grid;
+  justify-items: end;
+  gap: 16px;
+}
+
+.portfolio-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.funding-action {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font: 700 12px var(--sans);
+}
+
+.deposit-action {
+  border-color: rgba(97, 214, 162, 0.4);
+  color: #a9f0ce;
+  background: rgba(97, 214, 162, 0.12);
+}
+
+.withdraw-action {
+  border-color: rgba(239, 102, 117, 0.4);
+  color: #ffb9c0;
+  background: rgba(239, 102, 117, 0.1);
+}
+
+.funding-card {
+  display: grid;
+  gap: 22px;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: linear-gradient(145deg, #24212d, #15141b);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.2);
+}
+
+.deposit-card {
+  border-color: rgba(97, 214, 162, 0.3);
+}
+
+.withdraw-card {
+  border-color: rgba(239, 102, 117, 0.3);
+}
+
+.simulation-notice {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  color: var(--accent-soft);
+  background: rgba(142, 92, 255, 0.1);
+  font-size: 13px;
+}
+
+.funding-balance,
+.funding-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.funding-balance strong,
+.funding-summary strong {
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.quick-amounts {
+  display: flex;
+  gap: 8px;
+}
+
+.quick-amounts button {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+  background: #111016;
+  cursor: pointer;
+  font: 600 12px var(--sans);
+}
+
+.quick-amounts button:hover {
+  border-color: var(--accent-soft);
+  color: var(--text-h);
+}
+
+.funding-submit {
+  margin-top: 0;
+}
+
+.funding-history-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #15141b;
+}
+
+.funding-history-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+.funding-history-table th,
+.funding-history-table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.funding-history-table th {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.funding-history-table td {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.funding-history-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.funding-history-table td strong {
+  color: var(--text-h);
+}
+
+.funding-type {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.funding-deposit {
+  color: #a9f0ce;
+}
+
+.funding-withdrawal {
+  color: #ffb9c0;
 }
 
 .portfolio-warning {
@@ -620,6 +778,14 @@ a:hover {
     font-size: 30px;
   }
 
+  .portfolio-hero-side {
+    gap: 10px;
+  }
+
+  .portfolio-actions {
+    flex-direction: column;
+  }
+
   .asset-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -652,5 +818,16 @@ a:hover {
 
   .asset-breakdown {
     padding: 18px;
+  }
+
+  .funding-card {
+    padding: 22px;
+  }
+
+  .funding-balance,
+  .funding-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
   }
 }

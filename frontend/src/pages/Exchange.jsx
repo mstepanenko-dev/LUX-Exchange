@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import Navigation from '../components/Navigation.jsx'
 import { exchange, getRates, getWallets } from '../services/api.js'
 
 const currencies = ['GBP', 'EUR', 'USD', 'USDT', 'BTC']
@@ -93,15 +94,7 @@ function Exchange() {
 
   return (
     <main className="dashboard-page">
-      <nav className="navbar">
-        <div className="brand"><span className="brand-mark">L</span>UX EXCHANGE</div>
-        <div className="nav-links">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink className="active" to="/exchange">Exchange</NavLink>
-          <NavLink to="/transactions">Transactions</NavLink>
-        </div>
-        <button className="logout-button" type="button" onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigate('/login', { replace: true }) }}>Log out</button>
-      </nav>
+      <Navigation />
       <section className="dashboard-content narrow-content">
         <header className="dashboard-header">
           <div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import Navigation from '../components/Navigation.jsx'
 import { getPortfolio, getWallets } from '../services/api.js'
 
 const currencies = ['GBP', 'EUR', 'USD', 'USDT', 'BTC']
@@ -79,15 +80,7 @@ function Dashboard() {
 
   return (
     <main className="dashboard-page">
-      <nav className="navbar">
-        <div className="brand"><span className="brand-mark">L</span>UX EXCHANGE</div>
-        <div className="nav-links">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/exchange">Exchange</NavLink>
-          <NavLink to="/transactions">Transactions</NavLink>
-        </div>
-        <button className="logout-button" type="button" onClick={handleLogout}>Log out</button>
-      </nav>
+      <Navigation />
       <section className="dashboard-content">
         <header className="dashboard-header">
           <div>
@@ -103,7 +96,7 @@ function Dashboard() {
               {portfolioLoading ? <p className="portfolio-total portfolio-loading">Loading...</p> : portfolio && <p className="portfolio-total">{formatGBP(portfolio.totalGBP)}</p>}
               {portfolioWarning && <p className="portfolio-warning" role="status">Live portfolio valuation is temporarily unavailable</p>}
             </div>
-            <div className="portfolio-symbol">£</div>
+            <div className="portfolio-hero-side"><div className="portfolio-symbol">£</div><div className="portfolio-actions"><button type="button" className="funding-action deposit-action" onClick={() => navigate('/deposit')}>Deposit</button><button type="button" className="funding-action withdraw-action" onClick={() => navigate('/withdraw')}>Withdraw</button></div></div>
           </div>
           {portfolio?.assets?.length > 0 && (
             <div className="asset-breakdown">

@@ -49,4 +49,19 @@ export const getTransactions = async () => {
   return data
 }
 
+export const deposit = async (fundingData) => {
+  const { data } = await api.post('/funding/deposit', fundingData)
+  return data
+}
+
+export const withdraw = async (fundingData) => {
+  const { data } = await api.post('/funding/withdraw', fundingData)
+  return data
+}
+
+export const getFundingHistory = async () => {
+  const { data } = await api.get('/funding/history')
+  return data
+}
+
 export default api

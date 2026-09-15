@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import Navigation from '../components/Navigation.jsx'
 import { getTransactions } from '../services/api.js'
 
 function Transactions() {
@@ -41,15 +42,7 @@ function Transactions() {
 
   return (
     <main className="dashboard-page">
-      <nav className="navbar">
-        <div className="brand"><span className="brand-mark">L</span>UX EXCHANGE</div>
-        <div className="nav-links">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/exchange">Exchange</NavLink>
-          <NavLink className="active" to="/transactions">Transactions</NavLink>
-        </div>
-        <button className="logout-button" type="button" onClick={logout}>Log out</button>
-      </nav>
+      <Navigation />
       <section className="dashboard-content">
         <header className="dashboard-header">
           <div>
