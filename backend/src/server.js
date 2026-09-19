@@ -8,6 +8,7 @@ const exchangeRoutes = require("./routes/exchangeRoutes");
 const portfolioRoutes = require("./routes/portfolioRoutes");
 const portfolioHistoryRoutes = require("./routes/portfolioHistoryRoutes");
 const fundingRoutes = require("./routes/fundingRoutes");
+const devRoutes = require("./routes/devRoutes");
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/portfolio/history", portfolioHistoryRoutes);
 app.use("/api/funding", fundingRoutes);
 app.use("/api", exchangeRoutes);
+if (process.env.NODE_ENV !== "production") {
+  app.use("/api/dev", devRoutes);
+}
 
 app.get("/", (req, res) => {
   res.json({

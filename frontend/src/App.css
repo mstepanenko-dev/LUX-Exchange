@@ -516,6 +516,27 @@ a:hover {
   font: 600 25px/1.2 var(--heading);
 }
 
+.portfolio-history-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dev-history-button {
+  padding: 7px 10px;
+  border: 1px solid rgba(245, 213, 139, 0.4);
+  border-radius: 3px;
+  color: #f5d58b;
+  background: rgba(245, 213, 139, 0.08);
+  cursor: pointer;
+  font: 700 11px var(--sans);
+}
+
+.dev-history-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .range-selector {
   display: flex;
   gap: 5px;
@@ -593,6 +614,12 @@ a:hover {
 
 .history-error {
   color: #f5d58b;
+}
+
+.history-success {
+  margin: 0 0 16px;
+  color: #a9f0ce;
+  font-size: 13px;
 }
 
 .asset-breakdown {

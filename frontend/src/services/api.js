@@ -39,6 +39,11 @@ export const getPortfolioHistory = async (range = '24h') => {
   return data
 }
 
+export const clearPortfolioHistory = async () => {
+  const { data } = await api.delete('/dev/portfolio-history')
+  return data
+}
+
 export const getRates = async () => {
   const { data } = await api.get('/rates')
   return data

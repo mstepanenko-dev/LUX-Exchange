@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navigation from '../components/Navigation.jsx'
 import PortfolioChart from '../components/PortfolioChart.jsx'
-import { getPortfolio, getPortfolioHistory, getWallets } from '../services/api.js'
+import { clearPortfolioHistory, getPortfolio, getPortfolioHistory, getWallets } from '../services/api.js'
 
 const currencies = ['GBP', 'EUR', 'USD', 'USDT', 'BTC']
 
@@ -18,6 +18,10 @@ function Dashboard() {
   const [historySnapshots, setHistorySnapshots] = useState([])
   const [historyLoading, setHistoryLoading] = useState(true)
   const [historyError, setHistoryError] = useState(false)
+  const [historyRefresh, setHistoryRefresh] = useState(0)
+  const [historyActionMessage, setHistoryActionMessage] = useState('')
+  const [historyActionError, setHistoryActionError] = useState(false)
+  const [clearingHistory, setClearingHistory] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -81,7 +85,28 @@ function Dashboard() {
     loadWallets()
     loadPortfolio()
     loadHistory()
-  }, [historyRange, navigate])
+  }, [historyRange, historyRefresh, navigate])
+
+  const handleClearHistory = async () => {
+    if (!window.confirm('Clear your portfolio test history? Wallet balances and transactions will not be changed.')) {
+      return
+    }
+
+    setClearingHistory(true)
+    setHistoryActionMessage('')
+    setHistoryActionError(false)
+    try {
+      await clearPortfolioHistory()
+      setHistoryActionMessage('Portfolio history cleared.')
+      setHistoryLoading(true)
+      setHistoryRefresh((current) => current + 1)
+    } catch (requestError) {
+      setHistoryActionError(true)
+      setHistoryActionMessage(requestError.response?.data?.message || 'Unable to clear portfolio history.')
+    } finally {
+      setClearingHistory(false)
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -150,10 +175,14 @@ function Dashboard() {
         <section className="portfolio-history-section" aria-label="Portfolio performance">
           <div className="section-heading portfolio-history-heading">
             <div><p className="eyebrow">Portfolio performance</p><h2>Portfolio change</h2></div>
-            <div className="range-selector" role="group" aria-label="Portfolio history range">
-              {['24h', '7d', '30d', 'all'].map((range) => <button key={range} type="button" className={historyRange === range ? 'active' : ''} onClick={() => { setHistoryRange(range); setHistoryLoading(true) }}>{range === 'all' ? 'ALL' : range.toUpperCase()}</button>)}
+            <div className="portfolio-history-controls">
+              {import.meta.env.DEV && <button type="button" className="dev-history-button" onClick={handleClearHistory} disabled={clearingHistory}>Clear test history</button>}
+              <div className="range-selector" role="group" aria-label="Portfolio history range">
+                {['24h', '7d', '30d', 'all'].map((range) => <button key={range} type="button" className={historyRange === range ? 'active' : ''} onClick={() => { setHistoryRange(range); setHistoryLoading(true) }}>{range === 'all' ? 'ALL' : range.toUpperCase()}</button>)}
+              </div>
             </div>
           </div>
+          {historyActionMessage && <p className={historyActionError ? 'history-error' : 'history-success'} role="status">{historyActionMessage}</p>}
           {historyLoading && <p className="loading-state">Loading portfolio history...</p>}
           {!historyLoading && historyError && <p className="history-error" role="status">Portfolio history is temporarily unavailable.</p>}
           {!historyLoading && !historyError && historySnapshots.length < 2 && <p className="history-empty">Portfolio history will appear as your account activity is recorded.</p>}
@@ -164,7 +193,7 @@ function Dashboard() {
               <div className={portfolioChange > 0 ? 'change-positive' : portfolioChange < 0 ? 'change-negative' : 'change-neutral'}><span>Change in GBP</span><strong>{formatChange(portfolioChange)}</strong></div>
               <div className={portfolioChange > 0 ? 'change-positive' : portfolioChange < 0 ? 'change-negative' : 'change-neutral'}><span>Change %</span><strong>{portfolioChangePercent > 0 ? '+' : ''}{portfolioChangePercent.toFixed(2)}%</strong></div>
             </div>
-            <PortfolioChart snapshots={historySnapshots} />
+            <PortfolioChart snapshots={historySnapshots} range={historyRange} />
           </>}
         </section>
         {loading && <p className="loading-state">Loading your wallets...</p>}
