@@ -16,6 +16,7 @@ function Navigation() {
         <NavLink to="/dashboard">Dashboard</NavLink>
         <NavLink to="/exchange">Exchange</NavLink>
         <NavLink to="/transactions">Transactions</NavLink>
+        <NavLink to="/crypto-wallets">Crypto wallets</NavLink>
         <NavLink to="/deposit">Deposit</NavLink>
         <NavLink to="/withdraw">Withdraw</NavLink>
         <NavLink className="nav-secondary" to="/funding-history">Funding history</NavLink>

@@ -74,4 +74,19 @@ export const getFundingHistory = async () => {
   return data
 }
 
+export const getCryptoWallets = async () => {
+  const { data } = await api.get('/crypto-wallets')
+  return data
+}
+
+export const createBtcTestnet4Wallet = async () => {
+  const { data } = await api.post('/crypto-wallets/btc-testnet4')
+  return data
+}
+
+export const getBtcTestnet4Status = async () => {
+  const { data } = await api.get('/crypto-wallets/btc-testnet4/status')
+  return data
+}
+
 export default api

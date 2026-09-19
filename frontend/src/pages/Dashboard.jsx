@@ -146,6 +146,7 @@ function Dashboard() {
             <p className="eyebrow">Portfolio overview</p>
             <h1>{user?.firstName ? `Good to see you, ${user.firstName}.` : 'Your wallets.'}</h1>
             <p className="subtitle">Your balances, all in one place.</p>
+            <a className="dashboard-crypto-link" href="/crypto-wallets">Crypto wallets</a>
           </div>
         </header>
         <section className="portfolio-section" aria-label="Portfolio valuation">

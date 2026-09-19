@@ -19,6 +19,7 @@ model User {
   transactions        Transaction[]
   fundingTransactions FundingTransaction[]
   portfolioSnapshots  PortfolioSnapshot[]
+  cryptoWallets       CryptoWallet[]
 }
 
 model Wallet {
@@ -70,6 +71,20 @@ model PortfolioSnapshot {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+model CryptoWallet {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  currency     String
+  network      String
+  address      String   @unique
+  encryptedKey String
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, currency, network])
 }
 
 enum TransactionStatus {

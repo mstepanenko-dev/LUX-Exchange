@@ -7,6 +7,7 @@ import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Transactions from './pages/Transactions.jsx'
 import Withdraw from './pages/Withdraw.jsx'
+import CryptoWallets from './pages/CryptoWallets.jsx'
 import './App.css'
 
 function ProtectedRoute({ children }) {
@@ -47,6 +48,7 @@ function App() {
         <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
         <Route path="/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
         <Route path="/funding-history" element={<ProtectedRoute><FundingHistory /></ProtectedRoute>} />
+        <Route path="/crypto-wallets" element={<ProtectedRoute><CryptoWallets /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
