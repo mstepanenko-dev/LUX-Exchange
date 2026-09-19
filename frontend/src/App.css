@@ -698,8 +698,20 @@ a:hover {
 .exchange-fields {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items: end;
+  align-items: start;
   gap: 14px;
+}
+
+.exchange-field {
+  min-width: 0;
+}
+
+.exchange-field-label {
+  display: block;
+}
+
+.exchange-helper-spacer {
+  visibility: hidden;
 }
 
 .field select {
@@ -729,7 +741,7 @@ a:hover {
   width: 32px;
   height: 32px;
   place-items: center;
-  margin-bottom: 4px;
+  margin-top: 29px;
   border: 1px solid var(--border);
   border-radius: 50%;
   color: var(--accent-soft);
@@ -932,6 +944,7 @@ a:hover {
   }
 
   .exchange-arrow {
+    margin-top: 0;
     transform: rotate(0);
   }
 

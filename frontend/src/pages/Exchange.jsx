@@ -106,17 +106,18 @@ function Exchange() {
         {loading ? <p className="loading-state">Loading exchange data...</p> : (
           <form className="exchange-card" onSubmit={handleSubmit}>
             <div className="exchange-fields">
-              <label className="field">From
+              <label className="field exchange-field"> <span className="exchange-field-label">From</span>
                 <select value={fromCurrency} onChange={handleFromChange}>
                   {currencies.map((currency) => <option key={currency} value={currency}>{currency}</option>)}
                 </select>
                 <span className="balance-hint">Available: {formatAmount(availableBalance, fromCurrency)} {fromCurrency}</span>
               </label>
               <div className="exchange-arrow" aria-hidden="true">↓</div>
-              <label className="field">To
+              <label className="field exchange-field"> <span className="exchange-field-label">To</span>
                 <select value={toCurrency} onChange={(event) => setToCurrency(event.target.value)}>
                   {currencies.filter((currency) => currency !== fromCurrency).map((currency) => <option key={currency} value={currency}>{currency}</option>)}
                 </select>
+                <span className="balance-hint exchange-helper-spacer" aria-hidden="true">&nbsp;</span>
               </label>
             </div>
             <label className="field">Amount ({fromCurrency})
