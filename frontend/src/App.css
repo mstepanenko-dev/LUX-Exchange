@@ -703,7 +703,9 @@ a:hover {
 }
 
 .exchange-field {
-  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 46px 20px;
+  gap: 8px;
 }
 
 .exchange-field-label {
@@ -738,14 +740,21 @@ a:hover {
 
 .exchange-arrow {
   display: grid;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   place-items: center;
-  margin-top: 29px;
+  margin-top: 33px;
   border: 1px solid var(--border);
   border-radius: 50%;
   color: var(--accent-soft);
   background: #17141f;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.exchange-arrow:hover {
+  border-color: var(--accent-soft);
+  transform: scale(1.05);
 }
 
 .exchange-summary {
@@ -936,8 +945,17 @@ a:hover {
   }
 
   .exchange-card {
-    padding: 22px;
-  }
+  display: grid;
+  gap: 24px;
+  padding: 30px;
+  width: 100%;
+  max-width: 620px;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: linear-gradient(145deg, #24212d, #15141b);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.2);
+}
 
   .exchange-fields {
     grid-template-columns: 1fr;
