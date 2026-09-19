@@ -1,8 +1,16 @@
 const prisma = require("../lib/prisma");
 const { createBitcoinTestnet4Wallet } = require("../services/bitcoinTestnetService");
 const { encryptPrivateKey } = require("../services/walletEncryptionService");
-const { getAddressStatus } = require("../services/mempoolTestnet4Service");
+const {
+  getAddressStatus,
+  MempoolTestnet4Error,
+} = require("../services/mempoolTestnet4Service");
 
+const {
+  sendBitcoinTestnet4,
+  BitcoinTestnet4TransactionError,
+  InsufficientBitcoinTestnet4FundsError,
+} = require("../services/bitcoinTestnet4TransactionService");
 const CURRENCY = "BTC";
 const NETWORK = "bitcoin-testnet4";
 
@@ -101,8 +109,56 @@ const getBtcTestnet4Status = async (req, res) => {
   }
 };
 
+const sendBtcTestnet4 = async (req, res) => {
+  const { toAddress, amountBTC } = req.body || {};
+  if (typeof toAddress !== "string" || !toAddress.trim() || (typeof amountBTC !== "string" && typeof amountBTC !== "number")) {
+    return res.status(400).json({ success: false, message: "Recipient address and amount are required." });
+  }
+
+  try {
+    const wallet = await prisma.cryptoWallet.findUnique({
+      where: {
+        userId_currency_network: {
+          userId: req.user.userId,
+          currency: CURRENCY,
+          network: NETWORK,
+        },
+      },
+      select: { address: true, encryptedKey: true },
+    });
+
+    if (!wallet) {
+      return res.status(404).json({ success: false, message: "Bitcoin Testnet4 wallet not found." });
+    }
+
+    const result = await sendBitcoinTestnet4({
+      address: wallet.address,
+      encryptedKey: wallet.encryptedKey,
+      toAddress,
+      amountBTC,
+    });
+    return res.json(result);
+  } catch (error) {
+    if (error instanceof InsufficientBitcoinTestnet4FundsError || error instanceof BitcoinTestnet4TransactionError) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    if (error instanceof MempoolTestnet4Error) {
+      return res.status(503).json({
+        success: false,
+        message: "Bitcoin Testnet4 data is temporarily unavailable.",
+      });
+    }
+    console.error("SEND BTC TESTNET4 ERROR:", error.message);
+    return res.status(503).json({
+      success: false,
+      message: "Bitcoin Testnet4 service is temporarily unavailable.",
+    });
+  }
+};
+
 module.exports = {
   getCryptoWallets,
   createBtcTestnet4Wallet,
   getBtcTestnet4Status,
+  sendBtcTestnet4,
 };

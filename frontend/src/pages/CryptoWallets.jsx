@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useNavigate } from 'react-router-dom'
 import Navigation from '../components/Navigation.jsx'
-import { createBtcTestnet4Wallet, getBtcTestnet4Status, getCryptoWallets } from '../services/api.js'
+import { createBtcTestnet4Wallet, getBtcTestnet4Status, getCryptoWallets, sendBtcTestnet4 } from '../services/api.js'
 
 const BLOCKCHAIN_ERROR = 'Bitcoin Testnet4 data is temporarily unavailable.'
 
@@ -16,6 +16,10 @@ function CryptoWallets() {
   const [blockchainStatus, setBlockchainStatus] = useState(null)
   const [blockchainLoading, setBlockchainLoading] = useState(false)
   const [blockchainError, setBlockchainError] = useState(false)
+  const [recipient, setRecipient] = useState('')
+  const [amountBTC, setAmountBTC] = useState('0.00000100')
+  const [sending, setSending] = useState(false)
+  const [broadcastTransaction, setBroadcastTransaction] = useState(null)
 
   const loadWallet = async () => {
     try {
@@ -86,6 +90,34 @@ function CryptoWallets() {
     window.setTimeout(() => setCopied(false), 1800)
   }
 
+  const handleSend = async (event) => {
+    event.preventDefault()
+    const trimmedRecipient = recipient.trim()
+    const confirmation = window.confirm(`Send ${amountBTC} BTC to ${trimmedRecipient}?\n\nThis Testnet4 transaction cannot be reversed.`)
+    if (!confirmation) return
+
+    setSending(true)
+    setMessage({ type: '', text: '' })
+    setBroadcastTransaction(null)
+    try {
+      const response = await sendBtcTestnet4({ toAddress: trimmedRecipient, amountBTC })
+      setBroadcastTransaction(response.transaction)
+      setRecipient('')
+      setAmountBTC('0.00000100')
+      await loadBlockchainStatus()
+    } catch (requestError) {
+      if (requestError.response?.status === 401) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        navigate('/login', { replace: true })
+        return
+      }
+      setMessage({ type: 'error', text: requestError.response?.data?.message || 'Unable to send Testnet4 BTC.' })
+    } finally {
+      setSending(false)
+    }
+  }
+
   const formatBTC = (value) => Number(value || 0).toFixed(8)
   const formatTransactionDate = (value) => value
     ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
@@ -131,6 +163,38 @@ function CryptoWallets() {
               <p className="crypto-notice">Testnet4 only — do not send real BTC to this address.</p>
               <p className="crypto-description">This wallet is for development and portfolio demonstration only.</p>
             </article>
+          )}
+          {wallet && (
+            <section className="btc-send-panel" aria-label="Send Bitcoin Testnet4">
+              <div className="send-panel-heading">
+                <div>
+                  <p className="eyebrow">On-chain transfer</p>
+                  <h2>Send Testnet4 BTC</h2>
+                </div>
+                <span className="testnet-badge">TESTNET4</span>
+              </div>
+              <p className="send-warning">Testnet4 only — this sends test BTC and has no real monetary value.</p>
+              <div className="send-balance-row"><span>Confirmed spendable balance</span><strong>{formatBTC(blockchainStatus?.balance?.confirmedBTC)} BTC</strong></div>
+              <form className="btc-send-form" onSubmit={handleSend}>
+                <label className="field">
+                  Recipient address
+                  <input type="text" value={recipient} onChange={(event) => setRecipient(event.target.value)} placeholder="tb1q..." autoComplete="off" required />
+                </label>
+                <label className="field">
+                  Amount BTC
+                  <input type="number" min="0.00000547" step="0.00000001" value={amountBTC} onChange={(event) => setAmountBTC(event.target.value)} placeholder="0.00000100" required />
+                </label>
+                <p className="send-fee-note">Network fee is estimated from current Testnet4 conditions and deducted from confirmed UTXOs.</p>
+                <button className="primary-button send-button" type="submit" disabled={sending || blockchainLoading}>{sending ? 'Broadcasting...' : 'Send Testnet4 BTC'}</button>
+              </form>
+              {broadcastTransaction && (
+                <div className="transaction-success-panel" role="status">
+                  <strong>Transaction broadcast</strong>
+                  <span>TXID: {broadcastTransaction.txid}</span>
+                  <a href={`https://mempool.space/testnet4/tx/${broadcastTransaction.txid}`} target="_blank" rel="noreferrer">View on mempool.space</a>
+                </div>
+              )}
+            </section>
           )}
           {wallet && (
             <section className="blockchain-panel" aria-label="Bitcoin Testnet4 blockchain data">

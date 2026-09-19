@@ -41,6 +41,40 @@ const getAddressInfo = (address) => requestJson(`/address/${encodeURIComponent(a
 
 const getAddressTransactions = (address) => requestJson(`/address/${encodeURIComponent(address)}/txs`);
 
+const getAddressUtxos = (address) => requestJson(`/address/${encodeURIComponent(address)}/utxo`);
+
+const getRecommendedFees = () => requestJson("/v1/fees/recommended");
+
+const broadcastTransaction = async (rawHex) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${BASE_URL}/tx`, {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "text/plain" },
+      body: rawHex,
+    });
+
+    if (!response.ok) {
+      throw new MempoolTestnet4Error(`Mempool Testnet4 returned HTTP ${response.status}`);
+    }
+
+    return (await response.text()).trim();
+  } catch (error) {
+    if (error instanceof MempoolTestnet4Error) {
+      throw error;
+    }
+    if (error.name === "AbortError") {
+      throw new MempoolTestnet4Error("Mempool Testnet4 request timed out");
+    }
+    throw new MempoolTestnet4Error("Unable to reach Mempool Testnet4");
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 const getTipHeight = async () => Number(await requestJson("/blocks/tip/height"));
 
 const sumAddressOutputs = (outputs, address) => outputs.reduce(
@@ -105,6 +139,9 @@ module.exports = {
   MempoolTestnet4Error,
   getAddressInfo,
   getAddressTransactions,
+  getAddressUtxos,
+  getRecommendedFees,
+  broadcastTransaction,
   getTipHeight,
   getAddressStatus,
 };

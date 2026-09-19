@@ -29,5 +29,6 @@ const createBitcoinTestnet4Wallet = () => {
 };
 
 module.exports = {
+  TESTNET4_NETWORK,
   createBitcoinTestnet4Wallet,
 };

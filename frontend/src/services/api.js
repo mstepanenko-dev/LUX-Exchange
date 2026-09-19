@@ -89,4 +89,9 @@ export const getBtcTestnet4Status = async () => {
   return data
 }
 
+export const sendBtcTestnet4 = async (sendData) => {
+  const { data } = await api.post('/crypto-wallets/btc-testnet4/send', sendData)
+  return data
+}
+
 export default api
