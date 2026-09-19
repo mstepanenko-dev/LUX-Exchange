@@ -7,6 +7,7 @@ const {
 } = require("../services/mempoolTestnet4Service");
 
 const {
+  previewBitcoinTestnet4,
   sendBitcoinTestnet4,
   BitcoinTestnet4TransactionError,
   InsufficientBitcoinTestnet4FundsError,
@@ -156,9 +157,45 @@ const sendBtcTestnet4 = async (req, res) => {
   }
 };
 
+const previewBtcTestnet4 = async (req, res) => {
+  const { toAddress, amountBTC } = req.body || {};
+  if (typeof toAddress !== "string" || !toAddress.trim() || (typeof amountBTC !== "string" && typeof amountBTC !== "number")) {
+    return res.status(400).json({ success: false, message: "Recipient address and amount are required." });
+  }
+
+  try {
+    const wallet = await prisma.cryptoWallet.findUnique({
+      where: {
+        userId_currency_network: {
+          userId: req.user.userId,
+          currency: CURRENCY,
+          network: NETWORK,
+        },
+      },
+      select: { address: true },
+    });
+
+    if (!wallet) {
+      return res.status(404).json({ success: false, message: "Bitcoin Testnet4 wallet not found." });
+    }
+
+    return res.json(await previewBitcoinTestnet4({ address: wallet.address, toAddress, amountBTC }));
+  } catch (error) {
+    if (error instanceof InsufficientBitcoinTestnet4FundsError || error instanceof BitcoinTestnet4TransactionError) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    if (error instanceof MempoolTestnet4Error) {
+      return res.status(503).json({ success: false, message: "Bitcoin Testnet4 data is temporarily unavailable." });
+    }
+    console.error("PREVIEW BTC TESTNET4 ERROR:", error.message);
+    return res.status(503).json({ success: false, message: "Bitcoin Testnet4 service is temporarily unavailable." });
+  }
+};
+
 module.exports = {
   getCryptoWallets,
   createBtcTestnet4Wallet,
   getBtcTestnet4Status,
+  previewBtcTestnet4,
   sendBtcTestnet4,
 };

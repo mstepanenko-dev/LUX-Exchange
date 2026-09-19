@@ -116,6 +116,84 @@ const estimateFee = (inputCount, outputCount, feeRate) =>
     (10 + inputCount * 68 + outputCount * 31) * feeRate
   );
 
+const selectConfirmedUtxos = (utxos, amountSatoshis, feeRate) => {
+  const confirmedUtxos = utxos
+    .filter(
+      (utxo) =>
+        utxo.status?.confirmed &&
+        Number.isSafeInteger(Number(utxo.value)) &&
+        Number(utxo.value) > 0
+    )
+    .map((utxo) => ({ ...utxo, value: Number(utxo.value) }))
+    .sort((left, right) => right.value - left.value);
+
+  const selectedUtxos = [];
+  let selectedSatoshis = 0;
+
+  for (const utxo of confirmedUtxos) {
+    selectedUtxos.push(utxo);
+    selectedSatoshis += utxo.value;
+    if (selectedSatoshis >= amountSatoshis + estimateFee(selectedUtxos.length, 2, feeRate)) {
+      break;
+    }
+  }
+
+  if (!selectedUtxos.length || selectedSatoshis < amountSatoshis + estimateFee(selectedUtxos.length, 2, feeRate)) {
+    throw new InsufficientBitcoinTestnet4FundsError();
+  }
+
+  return { selectedUtxos, selectedSatoshis };
+};
+
+const calculateTransactionPlan = ({ selectedUtxos, selectedSatoshis, amountSatoshis, feeRate }) => {
+  const estimatedVsizeWithChange = 10 + selectedUtxos.length * 68 + 2 * 31;
+  const estimatedFeeWithChange = Math.ceil(estimatedVsizeWithChange * feeRate);
+  const possibleChange = selectedSatoshis - amountSatoshis - estimatedFeeWithChange;
+  const changeOutput = possibleChange > DUST_THRESHOLD_SATOSHIS;
+  const estimatedFeeSatoshis = changeOutput
+    ? estimatedFeeWithChange
+    : selectedSatoshis - amountSatoshis;
+
+  return {
+    selectedUtxos,
+    selectedSatoshis,
+    amountSatoshis,
+    estimatedVsize: changeOutput
+      ? estimatedVsizeWithChange
+      : 10 + selectedUtxos.length * 68 + 31,
+    initialChangeSatoshis: possibleChange,
+    estimatedFeeSatoshis,
+    totalSpendSatoshis: amountSatoshis + estimatedFeeSatoshis,
+    changeSatoshis: changeOutput ? possibleChange : 0,
+    changeOutput,
+    feeRate,
+    inputCount: selectedUtxos.length,
+    outputCount: changeOutput ? 2 : 1,
+  };
+};
+
+const calculateTransactionPlanForAddress = async ({ address, toAddress, amountBTC }) => {
+  const amountSatoshis = parseAmountSatoshis(amountBTC);
+  const destinationScript = validateTestnet4Address(toAddress);
+  const normalizedDestination = toAddress.trim();
+
+  if (address === normalizedDestination) {
+    throw new BitcoinTestnet4TransactionError("Sender and destination addresses must be different.");
+  }
+  if (amountSatoshis <= DUST_THRESHOLD_SATOSHIS) {
+    throw new BitcoinTestnet4TransactionError("Bitcoin Testnet4 amount is below the dust threshold.");
+  }
+
+  const [utxos, feeRate] = await Promise.all([getAddressUtxos(address), getFeeRate()]);
+  const selected = selectConfirmedUtxos(utxos, amountSatoshis, feeRate);
+
+  return {
+    ...calculateTransactionPlan({ ...selected, amountSatoshis, feeRate }),
+    destinationScript,
+    normalizedDestination,
+  };
+};
+
 const buildSignedTransaction = ({
   selectedUtxos,
   amountSatoshis,
@@ -172,81 +250,21 @@ const sendBitcoinTestnet4 = async ({
   toAddress,
   amountBTC,
 }) => {
-  const amountSatoshis = parseAmountSatoshis(amountBTC);
-  const destinationScript = validateTestnet4Address(toAddress);
-
-  const normalizedDestination = toAddress.trim();
-
-  if (address === normalizedDestination) {
-    throw new BitcoinTestnet4TransactionError(
-      "Sender and destination addresses must be different."
-    );
-  }
-
-  if (amountSatoshis <= DUST_THRESHOLD_SATOSHIS) {
-    throw new BitcoinTestnet4TransactionError(
-      "Bitcoin Testnet4 amount is below the dust threshold."
-    );
-  }
-
   if (typeof encryptedKey !== "string" || !encryptedKey) {
     throw new BitcoinTestnet4TransactionError(
       "Bitcoin Testnet4 wallet is unavailable."
     );
   }
 
-  const [utxos, feeRate] = await Promise.all([
-    getAddressUtxos(address),
-    getFeeRate(),
-  ]);
-
-  const confirmedUtxos = utxos
-    .filter(
-      (utxo) =>
-        utxo.status?.confirmed &&
-        Number.isSafeInteger(Number(utxo.value)) &&
-        Number(utxo.value) > 0
-    )
-    .map((utxo) => ({
-      ...utxo,
-      value: Number(utxo.value),
-    }))
-    .sort((left, right) => right.value - left.value);
-
-  let selectedUtxos = [];
-  let selectedSatoshis = 0;
-
-  for (const utxo of confirmedUtxos) {
-    selectedUtxos.push(utxo);
-    selectedSatoshis += utxo.value;
-
-    const estimatedFee = estimateFee(
-      selectedUtxos.length,
-      2,
-      feeRate
-    );
-
-    if (
-      selectedSatoshis >=
-      amountSatoshis + estimatedFee
-    ) {
-      break;
-    }
-  }
-
-  const estimatedFee = estimateFee(
-    selectedUtxos.length,
-    2,
-    feeRate
-  );
-
-  if (
-    !selectedUtxos.length ||
-    selectedSatoshis <
-      amountSatoshis + estimatedFee
-  ) {
-    throw new InsufficientBitcoinTestnet4FundsError();
-  }
+  const plan = await calculateTransactionPlanForAddress({ address, toAddress, amountBTC });
+  const {
+    amountSatoshis,
+    selectedUtxos,
+    selectedSatoshis,
+    feeRate,
+    destinationScript,
+    normalizedDestination,
+  } = plan;
 
   let privateKey;
 
@@ -273,10 +291,7 @@ const sendBitcoinTestnet4 = async ({
       );
     }
 
-    const initialChange =
-      selectedSatoshis -
-      amountSatoshis -
-      estimatedFee;
+    const initialChange = plan.initialChangeSatoshis;
 
     const initialTransaction =
       buildSignedTransaction({
@@ -288,14 +303,8 @@ const sendBitcoinTestnet4 = async ({
         keyPair,
       });
 
-    const requiredFee = Math.ceil(
-      initialTransaction.virtualSize * feeRate
-    );
-
-    const changeSatoshis =
-      selectedSatoshis -
-      amountSatoshis -
-      requiredFee;
+    const requiredFee = Math.ceil(initialTransaction.virtualSize * feeRate);
+    const changeSatoshis = selectedSatoshis - amountSatoshis - requiredFee;
 
     if (changeSatoshis < 0) {
       throw new InsufficientBitcoinTestnet4FundsError();
@@ -354,8 +363,29 @@ const sendBitcoinTestnet4 = async ({
   }
 };
 
+const previewBitcoinTestnet4 = async ({ address, toAddress, amountBTC }) => {
+  const plan = await calculateTransactionPlanForAddress({ address, toAddress, amountBTC });
+
+  return {
+    success: true,
+    preview: {
+      amountBTC: plan.amountSatoshis / SATOSHIS_PER_BTC,
+      estimatedFeeBTC: plan.estimatedFeeSatoshis / SATOSHIS_PER_BTC,
+      totalSpendBTC: plan.totalSpendSatoshis / SATOSHIS_PER_BTC,
+      changeBTC: plan.changeSatoshis / SATOSHIS_PER_BTC,
+      feeRateSatVb: plan.feeRate,
+      inputCount: plan.inputCount,
+      outputCount: plan.outputCount,
+      changeOutput: plan.changeOutput,
+    },
+  };
+};
+
 module.exports = {
   BitcoinTestnet4TransactionError,
   InsufficientBitcoinTestnet4FundsError,
+  calculateTransactionPlan,
+  selectConfirmedUtxos,
+  previewBitcoinTestnet4,
   sendBitcoinTestnet4,
 };
