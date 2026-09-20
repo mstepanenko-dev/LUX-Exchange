@@ -1343,6 +1343,158 @@ a:hover {
   color: var(--text-h);
 }
 
+.profile-content {
+  max-width: 1160px;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.7fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.profile-sections {
+  display: grid;
+  gap: 18px;
+}
+
+.account-summary-card,
+.settings-card {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: linear-gradient(145deg, #24212d, #15141b);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.2);
+}
+
+.account-summary-heading,
+.settings-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.account-summary-heading {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.account-summary-heading .eyebrow,
+.settings-heading .eyebrow {
+  margin: 0 0 7px;
+}
+
+.account-summary-heading h2,
+.settings-heading h2 {
+  margin: 0;
+  color: var(--text-h);
+  font: 600 23px/1.2 var(--heading);
+}
+
+.settings-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+.account-avatar {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(180, 154, 255, 0.35);
+  border-radius: 50%;
+  color: var(--accent-soft);
+  background: rgba(142, 92, 255, 0.14);
+  font: 600 18px var(--heading);
+}
+
+.account-summary-list {
+  display: grid;
+  gap: 0;
+  margin: 26px 0 0;
+}
+
+.account-summary-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+
+.account-summary-list dt,
+.account-summary-list dd {
+  margin: 0;
+  font-size: 12px;
+}
+
+.account-summary-list dt {
+  color: var(--muted);
+}
+
+.account-summary-list dd {
+  overflow-wrap: anywhere;
+  color: var(--text-h);
+  text-align: right;
+}
+
+.account-summary-list .account-status {
+  color: #a9f0ce;
+}
+
+.settings-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 26px;
+}
+
+.profile-readonly-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.readonly-field {
+  color: var(--muted) !important;
+  background: #19171f !important;
+  cursor: not-allowed;
+}
+
+.settings-button {
+  width: fit-content;
+  margin-top: 0;
+}
+
+.password-input-wrap {
+  position: relative;
+  display: block;
+}
+
+.password-input-wrap input {
+  padding-right: 66px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  padding: 3px 4px;
+  border: 0;
+  color: var(--accent-soft);
+  background: transparent;
+  cursor: pointer;
+  font: 700 11px var(--sans);
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  color: var(--text-h);
+}
+
 .status {
   display: inline-block;
   padding: 4px 8px;
@@ -1466,6 +1618,26 @@ a:hover {
 
   .portfolio-section {
     margin-bottom: 32px;
+  }
+
+  .profile-layout,
+  .profile-readonly-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-summary-card,
+  .settings-card {
+    padding: 22px;
+  }
+
+  .settings-heading {
+    display: block;
+  }
+
+  .settings-heading > span {
+    display: block;
+    margin-top: 8px;
+    text-align: left;
   }
 
   .portfolio-hero {

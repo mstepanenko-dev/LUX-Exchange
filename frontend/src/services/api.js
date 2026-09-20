@@ -24,6 +24,21 @@ export const register = async (userData) => {
   return data
 }
 
+export const getProfile = async () => {
+  const { data } = await api.get('/profile')
+  return data
+}
+
+export const updateProfile = async (profileData) => {
+  const { data } = await api.patch('/profile', profileData)
+  return data
+}
+
+export const changePassword = async (passwordData) => {
+  const { data } = await api.post('/profile/change-password', passwordData)
+  return data
+}
+
 export const getWallets = async () => {
   const { data } = await api.get('/wallets')
   return data
