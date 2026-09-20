@@ -11,7 +11,7 @@ function Navigation() {
 
   return (
     <nav className="navbar">
-      <div className="brand"><span className="brand-mark">L</span>UX EXCHANGE</div>
+      <NavLink className="brand" to="/dashboard" aria-label="LUX Exchange dashboard"><span className="brand-mark">L</span>UX EXCHANGE</NavLink>
       <div className="nav-links">
         <NavLink to="/dashboard">Dashboard</NavLink>
         <NavLink to="/exchange">Exchange</NavLink>

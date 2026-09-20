@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Dashboard from './pages/Dashboard.jsx'
 import Exchange from './pages/Exchange.jsx'
 import Deposit from './pages/Deposit.jsx'
@@ -9,7 +10,30 @@ import Transactions from './pages/Transactions.jsx'
 import Withdraw from './pages/Withdraw.jsx'
 import CryptoWallets from './pages/CryptoWallets.jsx'
 import Profile from './pages/Profile.jsx'
+import NotFound from './pages/NotFound.jsx'
 import './App.css'
+
+function PageTitle() {
+  const location = useLocation()
+
+  useEffect(() => {
+    const titles = {
+      '/dashboard': 'Dashboard',
+      '/exchange': 'Exchange',
+      '/deposit': 'Deposit',
+      '/withdraw': 'Withdraw',
+      '/transactions': 'Transactions',
+      '/funding-history': 'Funding History',
+      '/crypto-wallets': 'Crypto Wallets',
+      '/profile': 'Profile',
+      '/login': 'Sign In',
+      '/register': 'Create Account',
+    }
+    document.title = `${titles[location.pathname] || 'Page Not Found'} | LUX Exchange`
+  }, [location.pathname])
+
+  return null
+}
 
 function ProtectedRoute({ children }) {
   return localStorage.getItem('token') ? children : <Navigate to="/login" replace />
@@ -18,6 +42,7 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <BrowserRouter>
+      <PageTitle />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
@@ -51,7 +76,7 @@ function App() {
         <Route path="/funding-history" element={<ProtectedRoute><FundingHistory /></ProtectedRoute>} />
         <Route path="/crypto-wallets" element={<ProtectedRoute><CryptoWallets /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

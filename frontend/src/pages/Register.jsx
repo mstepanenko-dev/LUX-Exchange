@@ -7,6 +7,7 @@ function Register() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value })
@@ -42,7 +43,7 @@ function Register() {
             <label className="field">Last name<input name="lastName" value={form.lastName} onChange={handleChange} required autoComplete="family-name" /></label>
           </div>
           <label className="field">Email address<input name="email" type="email" value={form.email} onChange={handleChange} required autoComplete="email" /></label>
-          <label className="field">Password<input name="password" type="password" value={form.password} onChange={handleChange} required autoComplete="new-password" /></label>
+          <label className="field">Password<span className="password-input-wrap"><input name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} required autoComplete="new-password" /><button className="password-toggle" type="button" onClick={() => setShowPassword(!showPassword)} aria-label={`${showPassword ? 'Hide' : 'Show'} password`}>{showPassword ? 'Hide' : 'Show'}</button></span></label>
           {error && <p className="form-error" role="alert">{error}</p>}
           <button className="primary-button" type="submit" disabled={loading}>{loading ? 'Creating account...' : 'Create account'}</button>
         </form>

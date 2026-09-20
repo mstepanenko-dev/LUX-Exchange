@@ -34,12 +34,6 @@ function Transactions() {
   const formatValue = (value) => new Intl.NumberFormat('en-GB', { maximumFractionDigits: 8 }).format(Number(value || 0))
   const formatDate = (value) => new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
 
-  const logout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    navigate('/login', { replace: true })
-  }
-
   return (
     <main className="dashboard-page">
       <Navigation />
@@ -53,7 +47,7 @@ function Transactions() {
         </header>
         {loading && <p className="loading-state">Loading transaction history...</p>}
         {error && <p className="form-error" role="alert">{error}</p>}
-        {!loading && !error && transactions.length === 0 && <p className="empty-state">No transactions yet.</p>}
+        {!loading && !error && transactions.length === 0 && <div className="empty-state"><strong>No exchange transactions yet.</strong><span>Your completed exchanges will appear here.</span></div>}
         {!loading && !error && transactions.length > 0 && (
           <div className="transaction-table-wrap">
             <table className="transaction-table">

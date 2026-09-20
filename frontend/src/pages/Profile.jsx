@@ -108,7 +108,7 @@ function Profile() {
     : '—'
 
   if (loading) {
-    return <main className="dashboard-page"><Navigation /><section className="dashboard-content"><p className="loading-state">Loading profile...</p></section></main>
+    return <main className="dashboard-page"><Navigation /><section className="dashboard-content"><div className="skeleton-card profile-loading-card" aria-label="Loading profile"><span className="skeleton skeleton-line skeleton-line-wide" /><span className="skeleton skeleton-line" /><span className="skeleton skeleton-chart" /></div></section></main>
   }
 
   return (

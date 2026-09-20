@@ -192,7 +192,7 @@ function CryptoWallets() {
           </div>
         </header>
         <section className="crypto-wallet-page" aria-label="Bitcoin Testnet4 wallet">
-          {loading ? <p className="loading-state">Loading crypto wallets...</p> : (
+          {loading ? <div className="skeleton-card crypto-loading-card" aria-label="Loading crypto wallet"><span className="skeleton skeleton-line skeleton-line-short" /><span className="skeleton skeleton-balance" /><span className="skeleton skeleton-line skeleton-line-wide" /></div> : (
             <article className="crypto-wallet-card">
               <div className="crypto-wallet-heading">
                 <div>
@@ -277,7 +277,7 @@ function CryptoWallets() {
                   {blockchainLoading ? 'Refreshing...' : 'Refresh blockchain data'}
                 </button>
               </div>
-              {blockchainLoading && !blockchainStatus && <p className="loading-state">Checking Testnet4 blockchain...</p>}
+              {blockchainLoading && !blockchainStatus && <div className="skeleton-card blockchain-loading-card" aria-label="Loading Testnet4 blockchain data"><span className="skeleton skeleton-line skeleton-line-wide" /><span className="skeleton skeleton-chart" /></div>}
               {blockchainError && <p className="blockchain-error" role="status">{BLOCKCHAIN_ERROR}</p>}
               {blockchainStatus && !blockchainError && (
                 <>
@@ -288,7 +288,7 @@ function CryptoWallets() {
                   </div>
                   <div className="transaction-list">
                     <div className="transaction-list-heading"><h3>Recent transactions</h3><span>{blockchainStatus.transactions.length} total</span></div>
-                    {blockchainStatus.transactions.length === 0 ? <p className="transaction-empty">No Testnet4 transactions found for this address.</p> : blockchainStatus.transactions.map((transaction) => (
+                    {blockchainStatus.transactions.length === 0 ? <div className="empty-state transaction-empty"><strong>No Testnet4 transactions yet.</strong><span>Blockchain activity for this address will appear here.</span></div> : blockchainStatus.transactions.map((transaction) => (
                       <article className="blockchain-transaction" key={transaction.txid}>
                         <div className="transaction-main">
                           <div className="transaction-direction"><span className={transaction.direction === 'received' ? 'received-amount' : 'sent-amount'}>{transaction.direction === 'received' ? 'Received' : transaction.direction === 'sent' ? 'Sent' : 'Self transfer'}</span><strong className={transaction.direction === 'received' ? 'received-amount' : 'sent-amount'}>{transaction.netAmountBTC > 0 ? '+' : ''}{formatBTC(transaction.netAmountBTC)} BTC</strong></div>

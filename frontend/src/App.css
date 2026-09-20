@@ -2,6 +2,44 @@
   min-height: 100vh;
 }
 
+:root {
+  --text-h: #f4f0ff;
+  --muted: #9590a3;
+  --bg: #0c0b10;
+  --border: #302c3b;
+  --accent: #8e5cff;
+  --accent-soft: #b49aff;
+  --sans: 'Segoe UI', sans-serif;
+  --heading: Georgia, serif;
+  --card-padding: 26px;
+  --control-height: 46px;
+  --radius: 6px;
+  color: var(--muted);
+  background: var(--bg);
+  font: 16px/1.5 var(--sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  min-height: var(--control-height);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 3px;
+}
+
 .auth-page {
   min-height: 100vh;
   display: grid;
@@ -69,7 +107,8 @@ h1 {
 .field input {
   width: 100%;
   box-sizing: border-box;
-  padding: 13px 14px;
+  height: var(--control-height);
+  padding: 10px 14px;
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text-h);
@@ -78,13 +117,16 @@ h1 {
 }
 
 .field input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+  border-color: var(--accent-soft);
 }
 
 .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
   margin-top: 6px;
-  padding: 14px 18px;
+  padding: 10px 18px;
   border: 0;
   border-radius: 4px;
   color: #fff;
@@ -148,6 +190,12 @@ a:hover {
   align-items: center;
   gap: 26px;
   margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.navbar .brand {
+  flex: 0 0 auto;
 }
 
 .nav-links a {
@@ -156,6 +204,7 @@ a:hover {
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .nav-links a:hover,
@@ -279,6 +328,80 @@ a:hover {
 .loading-state,
 .empty-state {
   color: var(--muted);
+}
+
+.empty-state {
+  display: grid;
+  gap: 5px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(21, 20, 27, 0.82);
+}
+
+.empty-state strong {
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.empty-state span {
+  font-size: 13px;
+}
+
+.skeleton-card {
+  display: grid;
+  gap: 16px;
+  padding: var(--card-padding);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #24212d, #15141b);
+}
+
+.skeleton {
+  display: block;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #2b2835 25%, #3a3548 50%, #2b2835 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+.skeleton-line {
+  width: 45%;
+  height: 12px;
+}
+
+.skeleton-line-wide {
+  width: 76%;
+}
+
+.skeleton-line-short {
+  width: 28%;
+}
+
+.skeleton-balance {
+  width: 58%;
+  height: 30px;
+}
+
+.skeleton-total {
+  width: 220px;
+  height: 56px;
+  margin-top: 18px;
+}
+
+.skeleton-chart {
+  width: 100%;
+  height: 130px;
+}
+
+.skeleton-history,
+.profile-loading-card,
+.blockchain-loading-card {
+  min-height: 180px;
+}
+
+@keyframes skeleton-shimmer {
+  to { background-position: -200% 0; }
 }
 
 .portfolio-section {
@@ -1235,6 +1358,7 @@ a:hover {
 }
 
 .transaction-hash {
+  overflow-wrap: anywhere;
   color: var(--accent-soft);
   font: 12px var(--sans);
 }
@@ -1260,6 +1384,31 @@ a:hover {
   border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 12px;
+}
+
+.transaction-details code,
+.transaction-success-panel code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.not-found-code {
+  margin: 52px 0 6px;
+  color: var(--accent-soft);
+  font: 600 72px/0.9 var(--heading);
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.not-found-actions .primary-button,
+.not-found-actions .secondary-button {
+  margin-top: 0;
+  text-decoration: none;
 }
 
 .transaction-details > div {
@@ -1538,9 +1687,17 @@ a:hover {
   .nav-links {
     order: 3;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 10px;
     margin-left: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-links a.active::after {
@@ -1736,6 +1893,80 @@ a:hover {
 
   .funding-card {
     padding: 22px;
+  }
+
+  .transaction-table-wrap,
+  .funding-history-wrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .transaction-table,
+  .funding-history-table {
+    display: block;
+    min-width: 0;
+  }
+
+  .transaction-table thead,
+  .funding-history-table thead {
+    display: none;
+  }
+
+  .transaction-table tbody,
+  .funding-history-table tbody,
+  .transaction-table tr,
+  .funding-history-table tr {
+    display: grid;
+    gap: 0;
+  }
+
+  .transaction-table tr,
+  .funding-history-table tr {
+    margin-bottom: 10px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #15141b;
+  }
+
+  .transaction-table td,
+  .funding-history-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(48, 44, 59, 0.6);
+    white-space: normal;
+    text-align: right;
+  }
+
+  .transaction-table td:last-child,
+  .funding-history-table td:last-child {
+    border-bottom: 0;
+  }
+
+  .transaction-table td::before,
+  .funding-history-table td::before {
+    color: var(--muted);
+    content: attr(data-label);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .not-found-panel {
+    padding: 32px 24px;
+  }
+
+  .not-found-actions {
+    display: grid;
+  }
+
+  .not-found-actions a {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .funding-balance,

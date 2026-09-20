@@ -108,12 +108,6 @@ function Dashboard() {
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    navigate('/login', { replace: true })
-  }
-
   const getBalance = (currency) => {
     const wallet = wallets.find((item) => item.currency === currency)
     const balance = Number(wallet?.balance || 0)
@@ -153,7 +147,7 @@ function Dashboard() {
           <div className="portfolio-hero">
             <div>
               <div className="portfolio-label">Total portfolio value <span className="live-badge">Live valuation</span></div>
-              {portfolioLoading ? <p className="portfolio-total portfolio-loading">Loading...</p> : portfolio && <p className="portfolio-total">{formatGBP(portfolio.totalGBP)}</p>}
+              {portfolioLoading ? <div className="skeleton skeleton-total" aria-label="Loading portfolio value" /> : portfolio && <p className="portfolio-total">{formatGBP(portfolio.totalGBP)}</p>}
               {portfolioWarning && <p className="portfolio-warning" role="status">Live portfolio valuation is temporarily unavailable</p>}
             </div>
             <div className="portfolio-hero-side"><div className="portfolio-symbol">£</div><div className="portfolio-actions"><button type="button" className="funding-action deposit-action" onClick={() => navigate('/deposit')}>Deposit</button><button type="button" className="funding-action withdraw-action" onClick={() => navigate('/withdraw')}>Withdraw</button></div></div>
@@ -184,9 +178,9 @@ function Dashboard() {
             </div>
           </div>
           {historyActionMessage && <p className={historyActionError ? 'history-error' : 'history-success'} role="status">{historyActionMessage}</p>}
-          {historyLoading && <p className="loading-state">Loading portfolio history...</p>}
+          {historyLoading && <div className="skeleton-card skeleton-history" aria-label="Loading portfolio history"><span className="skeleton skeleton-line skeleton-line-wide" /><span className="skeleton skeleton-line" /><span className="skeleton skeleton-chart" /></div>}
           {!historyLoading && historyError && <p className="history-error" role="status">Portfolio history is temporarily unavailable.</p>}
-          {!historyLoading && !historyError && historySnapshots.length < 2 && <p className="history-empty">Portfolio history will appear as your account activity is recorded.</p>}
+          {!historyLoading && !historyError && historySnapshots.length < 2 && <div className="empty-state history-empty"><strong>Portfolio history will appear as activity is recorded.</strong></div>}
           {!historyLoading && !historyError && historySnapshots.length >= 2 && <>
             <div className="portfolio-change-summary">
               <div><span>Start value</span><strong>{formatGBP(firstSnapshot.totalGBP)}</strong></div>
@@ -197,7 +191,7 @@ function Dashboard() {
             <PortfolioChart snapshots={historySnapshots} range={historyRange} />
           </>}
         </section>
-        {loading && <p className="loading-state">Loading your wallets...</p>}
+        {loading && <div className="wallet-grid" aria-label="Loading wallets">{currencies.map((currency) => <article className="wallet-card skeleton-wallet-card" key={currency}><span className="skeleton skeleton-line" /><span className="skeleton skeleton-balance" /><span className="skeleton skeleton-line skeleton-line-short" /></article>)}</div>}
         {error && <p className="form-error" role="alert">{error}</p>}
         {!loading && !error && (
           <div className="wallet-grid">

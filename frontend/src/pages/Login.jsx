@@ -7,6 +7,7 @@ function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value })
@@ -43,7 +44,10 @@ function Login() {
           </label>
           <label className="field">
             Password
-            <input name="password" type="password" value={form.password} onChange={handleChange} required autoComplete="current-password" />
+            <span className="password-input-wrap">
+              <input name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} required autoComplete="current-password" />
+              <button className="password-toggle" type="button" onClick={() => setShowPassword(!showPassword)} aria-label={`${showPassword ? 'Hide' : 'Show'} password`}>{showPassword ? 'Hide' : 'Show'}</button>
+            </span>
           </label>
           {error && <p className="form-error" role="alert">{error}</p>}
           <button className="primary-button" type="submit" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</button>

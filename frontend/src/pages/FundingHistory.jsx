@@ -40,7 +40,7 @@ function FundingHistory() {
         <header className="dashboard-header"><div><p className="eyebrow">Funding activity</p><h1>Funding history.</h1><p className="subtitle">Your simulated deposits and withdrawals.</p></div></header>
         {loading && <p className="loading-state">Loading funding history...</p>}
         {error && <p className="form-error" role="alert">{error}</p>}
-        {!loading && !error && transactions.length === 0 && <p className="empty-state">No deposits or withdrawals yet.</p>}
+        {!loading && !error && transactions.length === 0 && <div className="empty-state"><strong>No deposits or withdrawals yet.</strong><span>Your simulated funding activity will appear here.</span></div>}
         {!loading && !error && transactions.length > 0 && <div className="funding-history-wrap"><table className="funding-history-table"><thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>{transactions.map((transaction) => <tr key={transaction.id}><td data-label="Date">{formatDate(transaction.createdAt)}</td><td data-label="Type"><span className={`funding-type funding-${transaction.type.toLowerCase()}`}>{transaction.type}</span></td><td data-label="Amount"><strong>{transaction.type === 'DEPOSIT' ? '+' : '-'} {formatAmount(transaction.amount)} {transaction.currency}</strong></td><td data-label="Status"><span className={`status status-${transaction.status.toLowerCase()}`}>{transaction.status}</span></td></tr>)}</tbody></table></div>}
       </section>
     </main>
