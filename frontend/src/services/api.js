@@ -39,6 +39,26 @@ export const changePassword = async (passwordData) => {
   return data
 }
 
+export const getPaymentMethods = async () => {
+  const { data } = await api.get('/payment-methods')
+  return data
+}
+
+export const addDemoCard = async (cardData) => {
+  const { data } = await api.post('/payment-methods/demo-card', cardData)
+  return data
+}
+
+export const setDefaultPaymentMethod = async (id) => {
+  const { data } = await api.post(`/payment-methods/${id}/default`)
+  return data
+}
+
+export const deletePaymentMethod = async (id) => {
+  const { data } = await api.delete(`/payment-methods/${id}`)
+  return data
+}
+
 export const getWallets = async () => {
   const { data } = await api.get('/wallets')
   return data

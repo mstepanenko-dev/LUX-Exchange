@@ -21,6 +21,7 @@ function Navigation() {
         <NavLink to="/withdraw">Withdraw</NavLink>
         <NavLink className="nav-secondary" to="/funding-history">Funding history</NavLink>
         <NavLink className="nav-secondary" to="/profile">Profile</NavLink>
+        <NavLink className="nav-secondary" to="/payment-methods">Payment methods</NavLink>
       </div>
       <button className="logout-button" type="button" onClick={logout}>Log out</button>
     </nav>

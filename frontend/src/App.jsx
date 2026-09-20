@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import Footer from './components/Footer.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Exchange from './pages/Exchange.jsx'
 import Deposit from './pages/Deposit.jsx'
@@ -11,6 +12,7 @@ import Withdraw from './pages/Withdraw.jsx'
 import CryptoWallets from './pages/CryptoWallets.jsx'
 import Profile from './pages/Profile.jsx'
 import NotFound from './pages/NotFound.jsx'
+import PaymentMethodsPage from './pages/PaymentMethodsPage.jsx'
 import './App.css'
 
 function PageTitle() {
@@ -26,6 +28,7 @@ function PageTitle() {
       '/funding-history': 'Funding History',
       '/crypto-wallets': 'Crypto Wallets',
       '/profile': 'Profile',
+      '/payment-methods': 'Payment Methods',
       '/login': 'Sign In',
       '/register': 'Create Account',
     }
@@ -36,7 +39,9 @@ function PageTitle() {
 }
 
 function ProtectedRoute({ children }) {
-  return localStorage.getItem('token') ? children : <Navigate to="/login" replace />
+  return localStorage.getItem('token')
+    ? <div className="app-shell">{children}<Footer /></div>
+    : <Navigate to="/login" replace />
 }
 
 function App() {
@@ -76,6 +81,7 @@ function App() {
         <Route path="/funding-history" element={<ProtectedRoute><FundingHistory /></ProtectedRoute>} />
         <Route path="/crypto-wallets" element={<ProtectedRoute><CryptoWallets /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/payment-methods" element={<ProtectedRoute><PaymentMethodsPage /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

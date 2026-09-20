@@ -10,6 +10,9 @@ LUX Exchange is a full-stack simulated exchange platform with real Bitcoin Testn
 - Live FX and crypto rates
 - Exchange transactions
 - Simulated deposits and withdrawals
+- Demo payment methods
+- Simulated card deposits
+- No full card or CVV storage
 - Portfolio valuation
 - Portfolio history and chart
 - Bitcoin Testnet4 wallet generation
@@ -62,6 +65,8 @@ The React frontend calls the Express API. Express applies authentication and dom
 - Private Bitcoin keys are encrypted at rest with AES-256-GCM.
 - Private keys are never returned to the frontend.
 - Bitcoin transaction signing stays on the server.
+- Demo payment methods store only non-sensitive display metadata such as brand, last4, expiry, and cardholder name.
+- No full card numbers, CVV/CVC, PINs, banking credentials, or other raw payment secrets are stored.
 - Mainnet support is not enabled.
 
 ## Local Setup
@@ -115,7 +120,15 @@ WALLET_ENCRYPTION_KEY=
 - `/funding-history`
 - `/crypto-wallets`
 - `/profile`
+- `/payment-methods`
+
+## Links
+
+- GitHub: https://github.com/mstepanenko-dev/LUX-Exchange
+- Telegram: placeholder, add the real project URL when available
+- X: placeholder, add the real project URL when available
+- LinkedIn: placeholder, add the real project URL when available
 
 ## Disclaimer
 
-This is an educational and portfolio project. It is not a regulated financial exchange. Do not use it with real funds.
+This is an educational and portfolio project. It is not a regulated financial exchange. No real card payments are processed. Do not use it with real funds.

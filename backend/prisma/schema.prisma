@@ -20,6 +20,25 @@ model User {
   fundingTransactions FundingTransaction[]
   portfolioSnapshots  PortfolioSnapshot[]
   cryptoWallets       CryptoWallet[]
+  paymentMethods      PaymentMethod[]
+}
+
+model PaymentMethod {
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  type           PaymentMethodType
+  brand          String?
+  last4          String?
+  cardholderName String?
+  expiryMonth    Int?
+  expiryYear     Int?
+  isDefault      Boolean           @default(false)
+  isDemo         Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Wallet {
@@ -104,4 +123,10 @@ enum FundingStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum PaymentMethodType {
+  CARD
+  BANK_TRANSFER
+  CRYPTO
 }

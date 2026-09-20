@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Code2 } from 'lucide-react'
 import { register } from '../services/api.js'
+import { socialLinks } from '../config/socialLinks.js'
 
 function Register() {
   const navigate = useNavigate()
@@ -48,6 +50,10 @@ function Register() {
           <button className="primary-button" type="submit" disabled={loading}>{loading ? 'Creating account...' : 'Create account'}</button>
         </form>
         <p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p>
+        <div className="auth-social-strip">
+          <span>Explore the project</span>
+          <a href={socialLinks.github} target="_blank" rel="noreferrer" aria-label="Open LUX Exchange GitHub"><Code2 size={16} aria-hidden="true" /> GitHub</a>
+        </div>
       </section>
     </main>
   )
