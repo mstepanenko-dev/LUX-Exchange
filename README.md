@@ -132,3 +132,32 @@ WALLET_ENCRYPTION_KEY=
 ## Disclaimer
 
 This is an educational and portfolio project. It is not a regulated financial exchange. No real card payments are processed. Do not use it with real funds.
+
+## Screenshots
+
+### Dashboard
+Real-time portfolio overview with multi-currency balances, GBP valuation and portfolio performance tracking.
+
+![Dashboard] ![alt text](<../screenshots/Screenshot 2026-09-20 014722.png>)
+
+### Bitcoin Testnet4 Wallet
+Bitcoin Testnet4 wallet with QR code, live blockchain data and transaction functionality.
+
+![Bitcoin Testnet4 Wallet] ![alt text](<../screenshots/Screenshot 2026-09-20 014805.png>)
+### Bitcoin Testnet4 Transactions
+Live transaction history with confirmations and sent/received transaction states.
+
+![Bitcoin Transactions]![alt text](<../screenshots/Screenshot 2026-09-20 014816.png>)
+
+### Demo Deposit Flow
+Simulated deposit workflow with demo payment methods and wallet balance updates.
+
+![Deposit]![alt text](<../screenshots/Screenshot 2026-09-20 014839.png>)
+### Payment Methods
+Secure demo payment-method management without storing full card numbers or CVV.
+
+![Payment Methods]![alt text](<../screenshots/Screenshot 2026-09-20 014906.png>)
+### Profile & Security
+Profile management and secure password-change functionality.
+
+![Profile]![alt text](<../screenshots/Screenshot 2026-09-20 014919.png>)
